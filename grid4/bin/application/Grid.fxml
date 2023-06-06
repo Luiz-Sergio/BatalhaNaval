@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane fx:id="mainPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="635.0" prefWidth="863.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.GridController">
+   <children>
+      <Pane fx:id="playerPane" layoutX="18.0" layoutY="14.0" prefHeight="400.0" prefWidth="400.0" />
+      <Pane fx:id="enemyPane" layoutX="444.0" layoutY="14.0" prefHeight="400.0" prefWidth="400.0" />
+      <Text layoutX="18.0" layoutY="427.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OCEANO DO JOGADORR" />
+      <Text layoutX="444.0" layoutY="427.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OCEANO DO INIMIGO" />
+      <Text layoutX="341.0" layoutY="457.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VITORIAS:" />
+      <Text layoutX="444.0" layoutY="457.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PERDAS:" />
+      <Text layoutX="379.0" layoutY="618.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\@2023 LUIZ SERGIO" />
+      <ScrollPane layoutX="37.0" layoutY="527.0" prefHeight="67.0" prefWidth="789.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>
+                  <Text layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VOCÊ: Acertou navio Cruiser" />
+                  <Text layoutX="14.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="INIMIGO: Acertou o oceano" />
+                  <Text layoutX="14.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VOCÊ: Acertou navio Fulano" />
+                  <Text layoutX="15.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="INIMIGO: Acertou o oceano" />
+                  <Text layoutX="14.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VOCÊ: Acertou navio Fulano" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <ImageView fx:id="imageView2" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+      <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+   </children>
+</AnchorPane>
