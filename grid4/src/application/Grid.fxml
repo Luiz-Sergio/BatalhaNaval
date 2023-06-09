@@ -19,7 +19,7 @@
       <Text layoutX="379.0" layoutY="646.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\@2023 LUIZ SERGIO" />
       <ScrollPane layoutX="37.0" layoutY="547.0" prefHeight="67.0" prefWidth="789.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+          <AnchorPane fx:id="logsPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
                <children>
                   <Text layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VOCÊ: Acertou navio Cruiser" />
                   <Text layoutX="14.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="INIMIGO: Acertou o oceano" />
