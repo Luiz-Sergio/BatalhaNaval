@@ -36,7 +36,6 @@ public class GridController {
 	private boolean[][] playerOccupiedPositions, enemyOccupiedPositions;
 	private ArrayList<Ship> playerShips,enemyShips;
 	private Logs logs;
-	private VBox vbox;
 	
 	
 	Image image = new Image(getClass().getResourceAsStream("ShipRescue.png"));
@@ -214,13 +213,12 @@ public class GridController {
     	Ship ship = new Ship(0,null,null,null,false);
     	for(Ship s : enemyShips) if(s.isHit(x,y)) ship = s;    	   
     	logs.generateMessage(enemyOccupiedPositions[x][y],player, ship);
-    	Text message = logs.getMessage();
-    	AnchorPane.setTopAnchor(message, 6.0);
-        AnchorPane.setLeftAnchor(message, 14.0);
-        
+    	Text message = logs.getMessage();    	
         for(Node n : logsPane.getChildren()) {
         	n.setLayoutY(n.getLayoutY()+18);
         }
         logsPane.getChildren().add(message);
+        logsPane.getChildren().get(logsPane.getChildren().size()-1).setLayoutX(14);
+    	logsPane.getChildren().get(logsPane.getChildren().size()-1).setLayoutY(19);
     }
 }
