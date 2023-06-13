@@ -1,9 +1,14 @@
-package application;
+package br.ufrn.imd.controle;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Random;
 
+import br.ufrn.imd.modelo.Corveta;
+import br.ufrn.imd.modelo.Destroyer;
+import br.ufrn.imd.modelo.Fragata;
+import br.ufrn.imd.modelo.Ship;
+import br.ufrn.imd.modelo.Submarino;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -17,55 +22,115 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
-
-public class GridController{
+/**
+ * Class to control all the flow of the game
+ * 
+ * @author Luiz Sergio
+ *
+ */
+public class GameController{
 
 	
 	@FXML
 	Pane mainPane;
+	/**
+	 * Pane to serve as enemyBoard
+	 */
 	@FXML
 	Pane enemyPane;
+	/**
+	 * Pane to serve as playerBoard
+	 */
 	@FXML
 	Pane playerPane;
+	/**
+	 * Button to start game
+	 */
 	@FXML
 	Button playButton;
+	/**
+	 * Cheat button to show enemies
+	 */
 	@FXML
 	Button showEnemys;
+	/**
+	 * Text to show victories counter in screen
+	 */
 	@FXML
 	Text vitoriasCounter;
+	/**
+	 * Text to show loses counter in screen
+	 */
 	@FXML
 	Text derrotasCounter;
 	
+	/**
+	 * int counter of victories to convert to string and show in screen
+	 */
 	private int vitoriasCounterInt=0;
+	/**
+	 * int counter of loses to convert to string and show in screen
+	 */
 	private int derrotasCounterInt=0;
 	
-	
+	/**
+	 * size of the board
+	 */
 	private int size = 400;
+	/**
+	 * number of cells[squares]
+	 */
 	private int spots = 10;
+	/**
+	 * size of the cell[square]
+	 */
 	private int dimension = size/spots;
-	
+	/**
+	 * matrix to store the squares of the board of the player
+	 */
 	private Rectangle[][] playerBoard;
+	/**
+	 * matrix to store the squares of the board of the enemy
+	 */
 	private Rectangle[][] enemyBoard;
 	
-	private boolean[][] shotsEnemy;
-	private boolean[][] shotsPlayer;
-	
-	private int[][] ocupiedPositions;//occupied positions of the player
+	/**
+	 * matrix of integers to signal player unoccupied positions, position of the ships and position of the shots
+	 */
+	private int[][] ocupiedPositions;
+	/**
+	 * matrix of integers to signal enemy unoccupied positions, position of the ships and position of the shots
+	 */
 	private int[][] ocupiedPositionsEnemy;//occupied positions of the enemy
-	
+	/**
+	 * Array to hold the player ships
+	 */
 	private ArrayList<Ship> playerShips;
+	/**
+	 * Array to store the enemy ships
+	 */
 	private ArrayList<Ship> enemyShips;
-	
+	/**
+	 * boolean to determine if the enemy ship is visible
+	 */
 	private boolean enemyVisible = false;
-	
+	/**
+	 * boolean to determine if the game ended
+	 */
 	private boolean gameOver = false;
-	
+	/**
+	 * boolean to determine if is player turn
+	 */
 	private boolean playerTurn = false;
-	
+	/**
+	 * boolean to determine if the game started
+	 */
 	private boolean gameStart = false;
 
 	
-
+	/**
+	 * initialize game scenario, such as creating and painting board and instantiating ships
+	 */
     @FXML
 	public void initialize() {
     	System.out.println("HYUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU"+playButton.getText()); 
@@ -78,8 +143,7 @@ public class GridController{
     	enemyBoard = new Rectangle[spots][spots];
     	ocupiedPositions = new int[spots][spots];
     	ocupiedPositionsEnemy = new int[spots][spots];
-    	shotsEnemy = new boolean[spots][spots];
-    	shotsPlayer = new boolean[spots][spots];
+    	
     	
     	//Setting all positions as not occupied
     	for(int i = 0; i < spots;i++) {
@@ -97,7 +161,7 @@ public class GridController{
 				rec.setOnMouseClicked(event -> {
 					if(playerTurn && !gameOver && gameStart) {
 						playerTurn((int)(event.getY()/dimension),(int)(event.getX()/dimension));
-						rec.setFill(Color.YELLOW);
+						//rec.setFill(Color.YELLOW);
 					}
 				});
 				enemyBoard[i / dimension][j/dimension] = rec;
@@ -124,6 +188,10 @@ public class GridController{
 
 	}
     
+    /**
+     * alternates the visibility of the ships based on the previous value of enemyVisible
+     * @param ships the ships to set the visibility to enemyVisible
+     */
     public void setShipsVisibility(ArrayList<Ship> ships) {
     	enemyVisible = !enemyVisible;
     	for(Ship ship : ships) {
@@ -131,15 +199,26 @@ public class GridController{
     	}
     }
     
+    /**
+     * fuction called to change the visibility of the enemies
+     */
     public void showEnemies() {
     	setShipsVisibility(enemyShips);
     }
     
+    /**
+     * save last valid position of the ship or rotate the ship
+     * @param event the mouse event
+     * @param ship the ship being pressed
+     */
     public void pressed(MouseEvent event, Ship ship) {
     	
+    	//used to get the pane parent
     	Node node = (Node) event.getSource();
     	Parent parent = node.getParent();
-    	int[][] ocPositions = new int[10][10];
+    	
+    	//used to determine which matrix of occupied position to use based on the parent's name
+    	int[][] ocPositions = new int[10][10];    	
     	if( parent.getId().equals("enemyPane")) {
     		System.out.println(":::::::::PANE NAME:::::::: " + parent.getId());
     		ocPositions = ocupiedPositionsEnemy;
@@ -148,6 +227,7 @@ public class GridController{
     		System.out.println(":::::::::PANE NAME:::::::: " + parent.getId());
     	}
     	
+    	//if the right button of the mouse is clicked verify is a rotation can be made
     	if(event.isSecondaryButtonDown()) {
     		System.out.println("SHIP GET Y "+ship.getY()/dimension);
     		if(ship.getVertical() && ((ship.getX()/dimension) + ship.getTamanho() <= 10)) {
@@ -165,7 +245,7 @@ public class GridController{
     			}
     		}
     		
-
+    	//if the left button is clicked then save it as the lastValidX and lastValidY
     	}else {
     		ship.setLastValidX(ship.getX());
     		ship.setLastValidY(ship.getY());
@@ -173,6 +253,12 @@ public class GridController{
     	}
     		
     }
+    
+    /**
+     * moves and draws the ship in the current position if its within borders otherwise print in the last valid position
+     * @param event the mouse event
+     * @param ship the ship being pressed
+     */
     public void draged(MouseEvent event, Ship ship) {
     	if(event.isPrimaryButtonDown()) {
     		if(ship.getX() + event.getX()<=400 &&ship.getX() + event.getX()>0 && ship.getY()+ event.getY()<=400 &&ship.getY()+event.getY()>0){
@@ -189,11 +275,20 @@ public class GridController{
     	}
     	
     }
+    
+    /**
+     * 
+     * @param event the mouse event
+     * @param ship the ship being pressed
+     */
     public void released(MouseEvent event, Ship ship) {
     	int posX,posY;
     	
+    	//used to get the pane parent
     	Node node = (Node) event.getSource();
     	Parent parent = node.getParent();
+    	
+    	//used to determine which matrix of occupied position to use based on the parent's name
     	int[][] ocPositions = new int[10][10];
     	if( parent.getId().equals("enemyPane")) {
     		System.out.println(":::::::::PANE NAME:::::::: " + parent.getId());
@@ -203,11 +298,12 @@ public class GridController{
     		System.out.println(":::::::::PANE NAME:::::::: " + parent.getId());
     	}
     	
+    	//if the position where it was released is invalid draw it in the last valid position, if valid fill the previous occupied position with zeros and fill the new occupied position with the ship id and draw it
     	if(event.getButton() == MouseButton.PRIMARY) {
     		posX = (int)ship.getX()/dimension;//45 becomes 1.something then becomes 1
         	posY = (int)ship.getY()/dimension;
         	System.out.println("RELEASED X: "+posX+" RELEASED Y"+posY);
-        	if(ship.isInvalid(posX, posY, ship, ocPositions)){
+        	if(ship.isInvalid(posX, posY, ocPositions)){
         		
         		ship.setX(ship.getLastValidX());//1 * 40(square size) its position is assigned as 40 when dropped at 45
             	ship.setY(ship.getLastValidY());
@@ -224,7 +320,15 @@ public class GridController{
     	ship.draw();
     }
     
-  
+  /**
+   * fill matrix of occupied position based on the height and vetical value
+   * @param x the x coordinate of the ship
+   * @param y the y coordinate of the ship
+   * @param vertical boolean to determine if is vertical or horizontal
+   * @param tamanho the height of the ship, used to determine how many cell it will fill
+   * @param ocupiedPositions matrix of integers to signal unoccupied positions, position of the ships and position of the shots
+   * @param value the value that will be filled in each cell
+   */
    public void occupyPositions(int x, int y, boolean vertical,int tamanho, int ocupiedPositions[][], int value) {
 	   if(vertical) {
 		   for(int i = 0; i < tamanho; i++) {
@@ -243,6 +347,11 @@ public class GridController{
 	   }
    }
     
+   /**
+    * give the x and y anchor coordinate to the ship
+    * @param ship the ship that will receive the position
+    * @param ocPositions matrix of integers to signal unoccupied positions, position of the ships and position of the shots
+    */
     public void givePosition(Ship ship, int[][] ocPositions) {
     	int x,y;
     	//give random coordinates
@@ -251,7 +360,7 @@ public class GridController{
     		x = dimension * (int)(Math.random() * spots);
 	    	y = dimension * (int)(Math.random() * spots);
 	    System.out.println(x/dimension+"<<<"+y/dimension);
-    	}while(ship.isInvalid(x/dimension,y/dimension,ship,ocPositions));
+    	}while(ship.isInvalid(x/dimension,y/dimension,ocPositions));
     	
     	occupyPositions(x/dimension,y/dimension,ship.getVertical(), ship.getTamanho(), ocPositions,ship.getTamanho());
     	
@@ -259,6 +368,14 @@ public class GridController{
     	ship.setY(y);
     }
     
+    /**
+     * Intantiate the ships, store it in an array and add it to the respective pane
+     * 
+     * @param pane the pane to whom the ship will pertain
+     * @param ocPositions matrix of integers to signal unoccupied positions, position of the ships and position of the shots
+     * @param isEnemy boolean to determine if the ship is a player's ship or a enemy's ship
+     * @param ships Array to store the ships
+     */
     public void instantiateShips(Pane pane, int[][] ocPositions,boolean isEnemy, ArrayList<Ship> ships) {
 	    	ImageView imageView2;
 	    	ImageView imageView3;
@@ -317,30 +434,46 @@ public class GridController{
     }
     
     
-    
+    /**
+     * Possible actions  in the player turn
+     * @param y y coordinate of the mouse in the enemy board
+     * @param x x coordinate of the mouse in the enemy board
+     */
 	public void playerTurn(int y, int x) {
 		//System.out.println(">>>>>>>>>>>>>>>>>>>>X "+(int)(event.getX()/dimension)+" >>>>>>>>>>>>>>>>>>>>>>>>Y "+(int)(event.getY()/dimension));
+		
+		//verify is the position wasn't shot[!=10]
 		if(ocupiedPositionsEnemy[y][x]!=10) {
+			//verify if is a ship[!=0]
 			if(ocupiedPositionsEnemy[y][x]!=0 ) {
+				
 				System.out.println("Acertou navio "+ocupiedPositionsEnemy[y][x]);
+				
 				for(Ship ship: enemyShips) {
 					System.out.println("LIFE BEFORE: "+ship.getLife());
 				}
+				
 				enemyShips.get(ocupiedPositionsEnemy[y][x]-2).atacked();
+				enemyBoard[x][y].setFill(Color.PURPLE);
+				
 				for(Ship ship: enemyShips) {
 					System.out.println("LIFE AFTER: "+ship.getLife());
 				}
-				//diminua vida do navio inimigo acertado
-				//atualize board de posiçoes ocupadas do navio inimigo
-				//
+			//if the two verification above fails it mean the ocean was hit	
 			}else {
+				enemyBoard[x][y].setFill(Color.YELLOW);
 				System.out.println("Acertou o oceano ");
 			}
+			
+			//if the position wasn't shot, mark it as shot and alternate turn
 			ocupiedPositionsEnemy[y][x]=10;
 			playerTurn = !playerTurn;
 		}
 		
+		//after a valid shot verify if the game is over
 		isGameOver(enemyShips);
+		
+		//if the game is over increment the counter of wins and print it in the screen
 		if(gameOver) {
 			System.out.println("YOU WON!!!");
 			vitoriasCounterInt++;
@@ -348,10 +481,14 @@ public class GridController{
 		}
 	}
 	
+	/**
+	 * Possible actions in the computer turn
+	 */
 	public void computerTurn() {
 		//System.out.println(">>>>>>>>>>>>>>>>>>>>X "+(int)(event.getX()/dimension)+" >>>>>>>>>>>>>>>>>>>>>>>>Y "+(int)(event.getY()/dimension));
 		int x ;
 		int y ;
+		
 		//will try random numbers till it find one that hasnt been shot
 		do {
 			x = (int)(Math.random() * spots);
@@ -361,12 +498,16 @@ public class GridController{
 		
 		playerTurn = !playerTurn;
 		
+		//just for debuging to delete latter
 		for(Ship ship: playerShips) {
 			System.out.println("LIFE BEFORE: "+ship.getLife());
 		}
+		
 		if(ocupiedPositions[y][x]!=0) {
 			playerShips.get(ocupiedPositions[y][x]-2).atacked();
 		}
+		
+		//just for debugging to delete latter
 		for(Ship ship: playerShips) {
 			System.out.println("LIFE AFTER: "+ship.getLife());
 		}
@@ -375,7 +516,7 @@ public class GridController{
 		
 		playerBoard[x][y].setFill(Color.RED);
 		
-		//just for debuging
+		//just for debuging to delete latter
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j<10;j++) {
 				System.out.print(ocupiedPositions[i][j]+" ");
@@ -390,8 +531,10 @@ public class GridController{
 			//
 		}
 		*/
-		
+		//after the shot verify it the game is over
 		isGameOver(playerShips);
+		
+		//if the game is over increment loss counter and print it on the screen
 		if(gameOver) {
 			System.out.println("COMPUTER WON!!!");
 			derrotasCounterInt++;
@@ -401,27 +544,37 @@ public class GridController{
 	}
 	
     
-    
+    /**
+     * if all the ships is with zero life it set gameOver as true otherwise set as false
+     * @param ships array of ship to iterate over and verify if every ship is with zero life
+     */
     private void isGameOver(ArrayList<Ship> ships) {
     	gameOver = true;
     	for(Ship ship:ships) {
 			if(ship.getLife()>0) {
 				gameOver = false;
+			}else {
+				ship.draw(true);
 			}
 		}
     	
     }
     
+    /**
+     * 
+     */
     @FXML
     public void startGame() {
-    	//System.out.println("Starting GAMEE!!! Les goooooooooooooooooo");
+    	
     	//when the game start block the ships movement
     	for(Ship ship: playerShips) {
     		ship.blockShip();
     	}
+    	//the player start the game
     	playerTurn = true;
-    	//gameOver = false;
+    	//determine that the game started
     	gameStart = true;
+    	
     	new Thread(() -> {
     	while(!gameOver) {
     		Platform.runLater(() -> {
