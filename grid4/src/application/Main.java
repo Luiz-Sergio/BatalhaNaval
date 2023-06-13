@@ -18,14 +18,7 @@ public class Main extends Application {
 		try {
 			FXMLLoader loader = new FXMLLoader();
 			AnchorPane root = (AnchorPane)loader.load(getClass().getResource("Grid.fxml").openStream());
-			
-			
-			 //new Image(new File("za.png").toURI().toString());
-			 
-			
-			
-			
-			
+
 			primaryStage.setScene(new Scene(root));
 			primaryStage.setResizable(false);
 			primaryStage.show();

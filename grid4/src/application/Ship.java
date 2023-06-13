@@ -9,18 +9,27 @@ public class Ship {
 	private double lastValidX;
 	private double lastValidY;
 	private int tamanho;
+	private int life;
 	private boolean vertical = true;
 	private ImageView imageView;
 	private Image verticalImage;
 	private Image horizontalImage;
+	private boolean isEnemy;
 	
-	public Ship(int tamanho, ImageView imageView, Image verticalImage, Image horizontalImage, boolean vertical) {
+	
+	public Ship() {
+		
+	}
+	
+	public Ship(int tamanho, ImageView imageView, Image verticalImage, Image horizontalImage, boolean vertical,boolean isEnemy) {
 		
 		this.tamanho = tamanho;
+		this.life = tamanho;
 		this.verticalImage = verticalImage;
 		this.horizontalImage = horizontalImage;
 		this.vertical = vertical;
 		this.imageView = imageView;
+		this.isEnemy = isEnemy;
 	}
 	
 	public void setX(double x) {
@@ -63,6 +72,15 @@ public class Ship {
 		return vertical;
 	}
 	
+	public int getLife() {
+		return this.life;
+	}
+	
+	public void atacked() {
+		if(this.life>0)
+			this.life--;
+	}
+	
 	public void draw() {
 		imageView.setTranslateX(x);
 		imageView.setTranslateY(y);
@@ -77,7 +95,27 @@ public class Ship {
 	    	imageView.setFitWidth(tamanho * 40);
 			
 		}
+		if(isEnemy) {
+			imageView.setVisible(false);
+			imageView.setOnMouseDragged(null);
+			imageView.setOnMousePressed(null);
+			imageView.setOnMouseReleased(null);
+			//imageView.setMouseTransparent(true);
+		}
 		System.out.println("eu estava aqui!");
+	}
+	
+	public void draw(boolean visible) {
+	
+		imageView.setVisible(visible);
+
+		System.out.println("eu estava aqui!");
+	}
+	
+	public void blockShip() {
+		imageView.setOnMouseDragged(null);
+		imageView.setOnMousePressed(null);
+		imageView.setOnMouseReleased(null);
 	}
 	
 	public void rotate() {
@@ -99,17 +137,51 @@ public class Ship {
 		}
 		
 	}
+	//if encounter position occupied return true
+	public boolean verifyOccupiedPositions(int x, int y, int ocupiedPositions[][],boolean checkRotate) {
+		boolean v = vertical;
+		if(checkRotate) {
+			v = !v;
+		}
+		if(v) {
+			for(int i = 0; i< tamanho;i++) {
+				System.out.println("Sou horizontal mas estou olhando verticaallllllllllllllllllllllllll");
+				System.out.println("YYYY " + y + "XXXXX " +x);
+				System.out.println("position: "+(y+i)+" : "+ocupiedPositions[y+i][x]);
+				if(ocupiedPositions[y+i][x]!=tamanho && ocupiedPositions[y+i][x]!=0) {
+					return false;
+				}
+			}
+		}else {
+			for(int i = 0; i< tamanho;i++) {
+				System.out.println("Sou vertical mas estou olhando horizontallllllllllllllllllllllllll");
+				System.out.println("YYYY " + y + "XXXXX " +x);
+				System.out.println("POSITION: "+(x+i)+" : "+ocupiedPositions[y][x+i]);
+				if(ocupiedPositions[y][x+i]!=tamanho && ocupiedPositions[y][x+i]!=0) {
+					return false;
+				}
+			}
+		}
+		return true;//no position occupied found return true
+	}
 	
-	 public boolean isValid(int x, int y,Ship ship,boolean ocupiedPositions[][]) {
+	 public boolean isInvalid(int x, int y,Ship ship,int ocupiedPositions[][]) {
 	    	System.out.println(ship.getTamanho() + "[[[[[["+x+"[[[[["+y);
 	    	
-	    		if((ship.getVertical() &&  ship.getTamanho() + y > 10 )|| ocupiedPositions[x][y]) {
+	    		if((ship.getVertical() &&  ship.getTamanho() + y > 10 ) ) {
+	    			
 		    		return true;
-		    	}else if((!ship.getVertical() &&  ship.getTamanho() + x > 10) || ocupiedPositions[x][y]) {
+		    	}else if((!ship.getVertical() &&  ship.getTamanho() + x > 10) ) {
 		    		return true;
 		    	}else {
 		    		//ocupiedPositions[x][y] = true;
-		    		return false;
+		    		if(verifyOccupiedPositions(x,y,ocupiedPositions,false)) {
+		    			return false;//its a valid position
+		    		}else {
+		    			return true;//found an occupied position return its invalid
+		    		}
+		    			
+		    		
 		    	}	
 	    	
 	    
