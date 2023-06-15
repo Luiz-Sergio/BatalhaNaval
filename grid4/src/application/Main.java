@@ -17,17 +17,13 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			FXMLLoader loader = new FXMLLoader();
-			AnchorPane root = (AnchorPane)loader.load(getClass().getResource("Grid.fxml").openStream());
-			
-			
-			 //new Image(new File("za.png").toURI().toString());
-			 
-			
-			
-			
-			
+			AnchorPane root = (AnchorPane)loader.load(getClass().getResource("/br/ufrn/imd/visao/Grid.fxml").openStream());
+
 			primaryStage.setScene(new Scene(root));
 			primaryStage.setResizable(false);
+			Image icon = new Image("icon.png");
+			primaryStage.getIcons().add(icon);
+			primaryStage.setTitle("BATTLE SHIP - MASTER GAME ULTRA VERSION");
 			primaryStage.show();
 		} catch(Exception e) {
 			e.printStackTrace();
