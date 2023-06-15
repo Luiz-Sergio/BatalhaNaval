@@ -7,6 +7,7 @@ import java.util.Random;
 import br.ufrn.imd.modelo.Corveta;
 import br.ufrn.imd.modelo.Destroyer;
 import br.ufrn.imd.modelo.Fragata;
+import br.ufrn.imd.modelo.Logs;
 import br.ufrn.imd.modelo.Ship;
 import br.ufrn.imd.modelo.Submarino;
 import javafx.application.Platform;
@@ -18,6 +19,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -44,6 +46,11 @@ public class GameController{
 	@FXML
 	Pane playerPane;
 	/**
+	 *  AnchorPane to see all the Attacks results
+	 */
+	@FXML
+	AnchorPane logsPane;	
+	/**
 	 * Button to start game
 	 */
 	@FXML
@@ -57,21 +64,21 @@ public class GameController{
 	 * Text to show victories counter in screen
 	 */
 	@FXML
-	Text vitoriasCounter;
+	Text winsCounter;
 	/**
 	 * Text to show loses counter in screen
 	 */
 	@FXML
-	Text derrotasCounter;
+	Text defeatsCounter;
 	
 	/**
 	 * int counter of victories to convert to string and show in screen
 	 */
-	private int vitoriasCounterInt=0;
+	private int winsCounterInt=0;
 	/**
 	 * int counter of loses to convert to string and show in screen
 	 */
-	private int derrotasCounterInt=0;
+	private int defeatsCounterInt=0;
 	
 	/**
 	 * size of the board
@@ -97,11 +104,11 @@ public class GameController{
 	/**
 	 * matrix of integers to signal player unoccupied positions, position of the ships and position of the shots
 	 */
-	private int[][] ocupiedPositions;
+	private int[][] occupiedPositions;
 	/**
 	 * matrix of integers to signal enemy unoccupied positions, position of the ships and position of the shots
 	 */
-	private int[][] ocupiedPositionsEnemy;//occupied positions of the enemy
+	private int[][] occupiedPositionsEnemy;//occupied positions of the enemy
 	/**
 	 * Array to hold the player ships
 	 */
@@ -126,8 +133,16 @@ public class GameController{
 	 * boolean to determine if the game started
 	 */
 	private boolean gameStart = false;
+	/**
+	 * List of input attacks in game instance
+	 */
+	private Logs logs;
+	/**
+	 * dummy Ship to be used in certain functions
+	 */
+	private Ship dummyShip = new Corveta(2,null,false, false);
 
-	
+	private boolean mousePressed = false;
 	/**
 	 * initialize game scenario, such as creating and painting board and instantiating ships
 	 */
@@ -141,14 +156,15 @@ public class GameController{
     	enemyShips = new ArrayList<>();
     	playerBoard = new Rectangle[spots][spots];
     	enemyBoard = new Rectangle[spots][spots];
-    	ocupiedPositions = new int[spots][spots];
-    	ocupiedPositionsEnemy = new int[spots][spots];
+    	occupiedPositions = new int[spots][spots];
+    	occupiedPositionsEnemy = new int[spots][spots];
+    	logs = new Logs();
     	
     	
     	//Setting all positions as not occupied
     	for(int i = 0; i < spots;i++) {
     		for(int j = 0; j < spots; j++) {
-    			ocupiedPositions[i][j] = 0;
+    			occupiedPositions[i][j] = 0;
     		}
     	}
     	//loop to create each board
@@ -181,8 +197,8 @@ public class GameController{
 		}
 		
 
-		instantiateShips(playerPane, ocupiedPositions,false, playerShips);
-		instantiateShips(enemyPane,ocupiedPositionsEnemy,true,enemyShips);
+		instantiateShips(playerPane, occupiedPositions,false, playerShips);
+		instantiateShips(enemyPane,occupiedPositionsEnemy,true,enemyShips);
 		
 		
 
@@ -221,35 +237,40 @@ public class GameController{
     	int[][] ocPositions = new int[10][10];    	
     	if( parent.getId().equals("enemyPane")) {
     		System.out.println(":::::::::PANE NAME:::::::: " + parent.getId());
-    		ocPositions = ocupiedPositionsEnemy;
+    		ocPositions = occupiedPositionsEnemy;
     	}else if(parent.getId().equals("playerPane")) {
-    		ocPositions = ocupiedPositions;
+    		ocPositions = occupiedPositions;
     		System.out.println(":::::::::PANE NAME:::::::: " + parent.getId());
     	}
     	
     	//if the right button of the mouse is clicked verify is a rotation can be made
-    	if(event.isSecondaryButtonDown()) {
-    		System.out.println("SHIP GET Y "+ship.getY()/dimension);
-    		if(ship.getVertical() && ((ship.getX()/dimension) + ship.getTamanho() <= 10)) {
-    			if(ship.verifyOccupiedPositions((int)ship.getX()/dimension,(int)ship.getY()/dimension, ocPositions, true)){
-    				occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,0);
+    	if(!mousePressed) {
+    		if(event.isSecondaryButtonDown() ) {
+    			
+        		System.out.println("SHIP GET Y "+ship.getY()/dimension);
+        		if(ship.getVertical() && ((ship.getX()/dimension) + ship.getTamanho() <= 10)) {
+        			if(ship.verifyOccupiedPositions((int)ship.getX()/dimension,(int)ship.getY()/dimension, ocPositions, true)){
+        				occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,0);
+            			ship.rotate();
+            			occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,ship.getTamanho());
+        			}
+        			
+        		}else if(!ship.getVertical() && ((ship.getY()/dimension) + ship.getTamanho() <= 10)) {
+        			if(ship.verifyOccupiedPositions((int)ship.getX()/dimension,(int)ship.getY()/dimension, ocPositions, true)){
+        			occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,0);
         			ship.rotate();
         			occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,ship.getTamanho());
-    			}
-    			
-    		}else if(!ship.getVertical() && ((ship.getY()/dimension) + ship.getTamanho() <= 10)) {
-    			if(ship.verifyOccupiedPositions((int)ship.getX()/dimension,(int)ship.getY()/dimension, ocPositions, true)){
-    			occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,0);
-    			ship.rotate();
-    			occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,ship.getTamanho());
-    			}
-    		}
-    		
-    	//if the left button is clicked then save it as the lastValidX and lastValidY
-    	}else {
-    		ship.setLastValidX(ship.getX());
-    		ship.setLastValidY(ship.getY());
-    		System.out.println("LAST VALID X AND Y"+ship.getLastValidX()+" "+ship.getLastValidY());
+        			}
+        		}
+        		
+        	//if the left button is clicked then save it as the lastValidX and lastValidY
+        	}else {
+        		mousePressed = !mousePressed;
+        		ship.setLastValidX(ship.getX());
+        		ship.setLastValidY(ship.getY());
+        		System.out.println("LAST VALID X AND Y"+ship.getLastValidX()+" "+ship.getLastValidY());
+        	}
+        	
     	}
     		
     }
@@ -292,14 +313,15 @@ public class GameController{
     	int[][] ocPositions = new int[10][10];
     	if( parent.getId().equals("enemyPane")) {
     		System.out.println(":::::::::PANE NAME:::::::: " + parent.getId());
-    		ocPositions = ocupiedPositionsEnemy;
+    		ocPositions = occupiedPositionsEnemy;
     	}else if(parent.getId().equals("playerPane")) {
-    		ocPositions = ocupiedPositions;
+    		ocPositions = occupiedPositions;
     		System.out.println(":::::::::PANE NAME:::::::: " + parent.getId());
     	}
     	
     	//if the position where it was released is invalid draw it in the last valid position, if valid fill the previous occupied position with zeros and fill the new occupied position with the ship id and draw it
     	if(event.getButton() == MouseButton.PRIMARY) {
+    		mousePressed = !mousePressed;
     		posX = (int)ship.getX()/dimension;//45 becomes 1.something then becomes 1
         	posY = (int)ship.getY()/dimension;
         	System.out.println("RELEASED X: "+posX+" RELEASED Y"+posY);
@@ -326,22 +348,22 @@ public class GameController{
    * @param y the y coordinate of the ship
    * @param vertical boolean to determine if is vertical or horizontal
    * @param tamanho the height of the ship, used to determine how many cell it will fill
-   * @param ocupiedPositions matrix of integers to signal unoccupied positions, position of the ships and position of the shots
+   * @param occupiedPositions matrix of integers to signal unoccupied positions, position of the ships and position of the shots
    * @param value the value that will be filled in each cell
    */
-   public void occupyPositions(int x, int y, boolean vertical,int tamanho, int ocupiedPositions[][], int value) {
+   public void occupyPositions(int x, int y, boolean vertical,int tamanho, int occupiedPositions[][], int value) {
 	   if(vertical) {
 		   for(int i = 0; i < tamanho; i++) {
-			   ocupiedPositions[y+i][x] = value;
+			   occupiedPositions[y+i][x] = value;
 		   }
 	   }else {
 		   for(int i = 0; i < tamanho; i++) {
-			   ocupiedPositions[y][x+i] = value;
+			   occupiedPositions[y][x+i] = value;
 		   }
 	   }
 	   for(int i = 0; i < 10; i++) {
 		   for(int j = 0; j < 10; j++) {
-			   System.out.print(ocupiedPositions[i][j]+ " ");
+			   System.out.print(occupiedPositions[i][j]+ " ");
 		   }
 		   System.out.println();
 	   }
@@ -443,18 +465,19 @@ public class GameController{
 		//System.out.println(">>>>>>>>>>>>>>>>>>>>X "+(int)(event.getX()/dimension)+" >>>>>>>>>>>>>>>>>>>>>>>>Y "+(int)(event.getY()/dimension));
 		
 		//verify is the position wasn't shot[!=10]
-		if(ocupiedPositionsEnemy[y][x]!=10) {
+		if(occupiedPositionsEnemy[y][x]!=10) {
 			//verify if is a ship[!=0]
-			if(ocupiedPositionsEnemy[y][x]!=0 ) {
+			if(occupiedPositionsEnemy[y][x]!=0 ) {
 				
-				System.out.println("Acertou navio "+ocupiedPositionsEnemy[y][x]);
+				System.out.println("Acertou navio "+occupiedPositionsEnemy[y][x]);
 				
 				for(Ship ship: enemyShips) {
 					System.out.println("LIFE BEFORE: "+ship.getLife());
 				}
 				
-				enemyShips.get(ocupiedPositionsEnemy[y][x]-2).atacked();
-				enemyBoard[x][y].setFill(Color.PURPLE);
+				enemyShips.get(occupiedPositionsEnemy[y][x]-2).attacked();				
+				enemyBoard[x][y].setFill(Color.RED);
+				logs.generateMessage(true,true, enemyShips.get(occupiedPositionsEnemy[y][x]-2));
 				
 				for(Ship ship: enemyShips) {
 					System.out.println("LIFE AFTER: "+ship.getLife());
@@ -462,11 +485,15 @@ public class GameController{
 			//if the two verification above fails it mean the ocean was hit	
 			}else {
 				enemyBoard[x][y].setFill(Color.YELLOW);
+				logs.generateMessage(false,true, new Corveta(2,null,false, false));
 				System.out.println("Acertou o oceano ");
 			}
 			
+			    	    	
+	        this.addMessage(logs.getMessage());
+	        
 			//if the position wasn't shot, mark it as shot and alternate turn
-			ocupiedPositionsEnemy[y][x]=10;
+			occupiedPositionsEnemy[y][x]=10;
 			playerTurn = !playerTurn;
 		}
 		
@@ -476,15 +503,15 @@ public class GameController{
 		//if the game is over increment the counter of wins and print it in the screen
 		if(gameOver) {
 			System.out.println("YOU WON!!!");
-			vitoriasCounterInt++;
-			vitoriasCounter.setText(Integer.toString(vitoriasCounterInt));
+			winsCounterInt++;
+			winsCounter.setText(Integer.toString(winsCounterInt));
 		}
 	}
 	
 	/**
 	 * Possible actions in the computer turn
 	 */
-	public void computerTurn() {
+	public void computerTurn() {		
 		//System.out.println(">>>>>>>>>>>>>>>>>>>>X "+(int)(event.getX()/dimension)+" >>>>>>>>>>>>>>>>>>>>>>>>Y "+(int)(event.getY()/dimension));
 		int x ;
 		int y ;
@@ -494,7 +521,7 @@ public class GameController{
 			x = (int)(Math.random() * spots);
 			y = (int)(Math.random() * spots);
 			System.out.println("COMPUTADOR ESCOLHEU "+x+" "+y);
-		}while(ocupiedPositions[y][x]==10);
+		}while(occupiedPositions[y][x]==10);
 		
 		playerTurn = !playerTurn;
 		
@@ -503,42 +530,51 @@ public class GameController{
 			System.out.println("LIFE BEFORE: "+ship.getLife());
 		}
 		
-		if(ocupiedPositions[y][x]!=0) {
-			playerShips.get(ocupiedPositions[y][x]-2).atacked();
+		if(occupiedPositions[y][x]!=0) {
+			playerBoard[x][y].setFill(Color.RED);
+			playerShips.get(occupiedPositions[y][x]-2).attacked();	
+			logs.generateMessage(true,false, playerShips.get(occupiedPositions[y][x]-2));
+		}
+		else {
+			playerBoard[x][y].setFill(Color.YELLOW);
+			logs.generateMessage(false,false, dummyShip);
 		}
 		
 		//just for debugging to delete latter
 		for(Ship ship: playerShips) {
 			System.out.println("LIFE AFTER: "+ship.getLife());
 		}
+		    	    	
+        this.addMessage(logs.getMessage());
 		//set the unshot position as 10 to sign that it was shot there
-		ocupiedPositions[y][x]=10;
+		occupiedPositions[y][x]=10;
 		
-		playerBoard[x][y].setFill(Color.RED);
+		
 		
 		//just for debuging to delete latter
 		for(int i = 0; i < 10; i++) {
 			for(int j = 0; j<10;j++) {
-				System.out.print(ocupiedPositions[i][j]+" ");
+				System.out.print(occupiedPositions[i][j]+" ");
 			}
 			System.out.println();
 		}
 				/*
-		if(ocupiedPositions[y][x]!=0) {
-			System.out.println("Acertou navio "+ocupiedPositionsEnemy[y][x]);
+		if(occupiedPositions[y][x]!=0) {
+			System.out.println("Acertou navio "+occupiedPositionsEnemy[y][x]);
 			//diminua vida do navio inimigo acertado
 			//atualize board de posiçoes ocupadas do navio inimigo
 			//
 		}
 		*/
+		
 		//after the shot verify it the game is over
 		isGameOver(playerShips);
 		
 		//if the game is over increment loss counter and print it on the screen
 		if(gameOver) {
 			System.out.println("COMPUTER WON!!!");
-			derrotasCounterInt++;
-			derrotasCounter.setText(Integer.toString(derrotasCounterInt));
+			defeatsCounterInt++;
+			defeatsCounter.setText(Integer.toString(defeatsCounterInt));
 		}
 		//
 	}
@@ -565,7 +601,7 @@ public class GameController{
      */
     @FXML
     public void startGame() {
-    	
+    	if(!gameStart)logsPane.getChildren().clear();    
     	//when the game start block the ships movement
     	for(Ship ship: playerShips) {
     		ship.blockShip();
@@ -603,12 +639,19 @@ public class GameController{
     }
     
     public void endGame() {
-    	
+    		
     	/*
     	for(Ship ship: playerShips) {
     		ship.unblockShip();
     	}
     	*/
+    }         
+    public void addMessage(Text message) {
+    	for(Node n : logsPane.getChildren()) {
+        	n.setLayoutY(n.getLayoutY()+18);
+        }
+        logsPane.getChildren().add(message);
+        logsPane.getChildren().get(logsPane.getChildren().size()-1).setLayoutX(14);
+    	logsPane.getChildren().get(logsPane.getChildren().size()-1).setLayoutY(19);
     }
-    
 }

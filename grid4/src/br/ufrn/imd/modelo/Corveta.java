@@ -5,7 +5,6 @@ import javafx.scene.image.ImageView;
 
 public class Corveta extends Ship {
 	
-	private String nome;
 	private static Image verticalImage;
 	private static Image horizontalImage;
 	
@@ -19,14 +18,7 @@ public class Corveta extends Ship {
 	public Corveta(int tamanho, ImageView imageView, boolean vertical,boolean isEnemy) {
 
 		super(tamanho,  imageView,  verticalImage,  horizontalImage,vertical,isEnemy);
-		this.nome = "Fragata";
+		this.setName("Corveta");
 		
-	}
-	
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	public String getNome() {
-		return nome;
 	}
 }

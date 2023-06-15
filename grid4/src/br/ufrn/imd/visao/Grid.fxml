@@ -13,20 +13,15 @@
    <children>
       <Pane fx:id="playerPane" layoutX="18.0" layoutY="32.0" prefHeight="400.0" prefWidth="400.0" />
       <Pane fx:id="enemyPane" layoutX="444.0" layoutY="32.0" prefHeight="400.0" prefWidth="400.0" />
-      <Text layoutX="18.0" layoutY="448.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OCEANO DO JOGADORR" />
+      <Text layoutX="18.0" layoutY="444.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OCEANO DO JOGADOR" />
       <Text layoutX="444.0" layoutY="445.0" strokeType="OUTSIDE" strokeWidth="0.0" text="OCEANO DO INIMIGO" />
       <Text fill="#1aff5b" layoutX="339.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VITORIAS:" />
       <Text fill="#ff1d1d" layoutX="440.0" layoutY="497.0" strokeType="OUTSIDE" strokeWidth="0.0" text="DERROTAS:" />
       <Text layoutX="379.0" layoutY="646.0" strokeType="OUTSIDE" strokeWidth="0.0" text="\@2023 LUIZ SERGIO" />
       <ScrollPane layoutX="37.0" layoutY="547.0" prefHeight="67.0" prefWidth="789.0">
         <content>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
-               <children>
-                  <Text layoutX="14.0" layoutY="19.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VOCÊ: Acertou navio Cruiser" />
-                  <Text layoutX="14.0" layoutY="37.0" strokeType="OUTSIDE" strokeWidth="0.0" text="INIMIGO: Acertou o oceano" />
-                  <Text layoutX="14.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VOCÊ: Acertou navio Fulano" />
-                  <Text layoutX="15.0" layoutY="71.0" strokeType="OUTSIDE" strokeWidth="0.0" text="INIMIGO: Acertou o oceano" />
-                  <Text layoutX="14.0" layoutY="87.0" strokeType="OUTSIDE" strokeWidth="0.0" text="VOCÊ: Acertou navio Fulano" />
+          <AnchorPane fx:id="logsPane" minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+               <children>                  
                </children>
             </AnchorPane>
         </content>
@@ -42,7 +37,7 @@
       </MenuBar>
       <Button fx:id="playButton" layoutX="394.0" layoutY="453.0" mnemonicParsing="false" onAction="#startGame" text="JOGAR!" textFill="RED" />
       <Button fx:id="showEnemys" layoutX="676.0" layoutY="453.0" mnemonicParsing="false" onAction="#showEnemies" text="EXIBIR NAVIOS INIMIGOS" />
-      <Text fx:id="vitoriasCounter" layoutX="394.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
-      <Text fx:id="derrotasCounter" layoutX="505.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+      <Text fx:id="winsCounter" layoutX="394.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
+      <Text fx:id="defeatsCounter" layoutX="505.0" layoutY="496.0" strokeType="OUTSIDE" strokeWidth="0.0" text="0" />
    </children>
 </AnchorPane>

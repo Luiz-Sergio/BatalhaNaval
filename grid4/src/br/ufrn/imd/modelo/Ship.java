@@ -55,10 +55,14 @@ public class Ship {
 	 * boolean to determine if the ship is enemy or player
 	 */
 	private boolean isEnemy;
+	/**
+	 * the name of the ship type
+	 */
+	private String name;
 	
 	
 	public Ship() {
-		
+		this.name = "Navio";
 	}
 	
 	public Ship(int height, ImageView imageView, Image verticalImage, Image horizontalImage, boolean vertical,boolean isEnemy) {
@@ -70,6 +74,7 @@ public class Ship {
 		this.vertical = vertical;
 		this.imageView = imageView;
 		this.isEnemy = isEnemy;
+		this.name = "Navio";
 	}
 	
 	public void setX(double x) {
@@ -121,7 +126,7 @@ public class Ship {
 	/**
 	 * called in game controller when its detected that one of his positions was hit
 	 */
-	public void atacked() {
+	public void attacked() {
 		if(this.life>0)
 			this.life--;
 	}
@@ -252,4 +257,12 @@ public class Ship {
 		    		}		
 		    	}	   	
 	    }
+	 
+	 public void setName(String name) {
+			this.name = name;
+		}
+		public String getName() {
+			return name;
+		}
+	 
 }

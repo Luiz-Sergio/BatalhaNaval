@@ -5,7 +5,6 @@ import javafx.scene.image.ImageView;
 
 public class Submarino extends Ship {
 	
-	private String nome;
 	private static Image verticalImage;
 	private static Image horizontalImage;
 	
@@ -19,14 +18,7 @@ public class Submarino extends Ship {
 	public Submarino(int tamanho, ImageView imageView, boolean vertical,boolean isEnemey) {
 
 		super(tamanho,  imageView,  verticalImage,  horizontalImage,vertical,isEnemey);
-		this.nome = "Fragata";
+		this.setName("Submarino");
 		
-	}
-	
-	public void setNome(String nome) {
-		this.nome = nome;
-	}
-	public String getNome() {
-		return nome;
 	}
 }
