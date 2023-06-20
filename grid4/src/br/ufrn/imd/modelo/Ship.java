@@ -10,7 +10,7 @@ import javafx.scene.image.ImageView;
  * @author Luiz Sergio
  *
  */
-public class Ship {
+public class Ship implements Piece{
 	/**
 	 * the x coordinate of the ship
 	 */

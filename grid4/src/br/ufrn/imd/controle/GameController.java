@@ -69,8 +69,7 @@ public class GameController{
 	 * Text to show loses counter in screen
 	 */
 	@FXML
-	Text defeatsCounter;
-	
+	Text defeatsCounter;	
 	/**
 	 * int counter of victories to convert to string and show in screen
 	 */
@@ -228,7 +227,6 @@ public class GameController{
      * @param ship the ship being pressed
      */
     public void pressed(MouseEvent event, Ship ship) {
-    	
     	//used to get the pane parent
     	Node node = (Node) event.getSource();
     	Parent parent = node.getParent();
@@ -262,6 +260,10 @@ public class GameController{
         			occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,ship.getTamanho());
         			}
         		}
+        		else {
+        			logs.generateError(0);
+        			this.addMessage(logs.getMessage());
+        		}
         		
         	//if the left button is clicked then save it as the lastValidX and lastValidY
         	}else {
@@ -291,6 +293,8 @@ public class GameController{
     			
     	    		ship.setX(ship.getLastValidX());
     	    		ship.setY(ship.getLastValidY());
+    	    		logs.generateError(1);
+        			this.addMessage(logs.getMessage());
     	    	
     		}
     	}
@@ -496,6 +500,10 @@ public class GameController{
 			occupiedPositionsEnemy[y][x]=10;
 			playerTurn = !playerTurn;
 		}
+		else {
+			logs.generateError(2);
+			this.addMessage(logs.getMessage());
+		}
 		
 		//after a valid shot verify if the game is over
 		isGameOver(enemyShips);
@@ -650,7 +658,7 @@ public class GameController{
     	for(Node n : logsPane.getChildren()) {
         	n.setLayoutY(n.getLayoutY()+18);
         }
-        logsPane.getChildren().add(message);
+        logsPane.getChildren().add(message);       
         logsPane.getChildren().get(logsPane.getChildren().size()-1).setLayoutX(14);
     	logsPane.getChildren().get(logsPane.getChildren().size()-1).setLayoutY(19);
     }

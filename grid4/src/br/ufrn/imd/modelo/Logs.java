@@ -2,6 +2,7 @@ package br.ufrn.imd.modelo;
 
 import java.util.ArrayList;
 
+import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 /**
@@ -31,6 +32,14 @@ public class Logs {
 		else message = new Text("INIMIGO:");		
         if(hit) message = new Text(message.getText()+" Acertou o navio "+ship.getName());
         else message = new Text(message.getText()+" Acertou o oceano");				
+		logs.add(message);
+	}
+	public void generateError(int param) {
+		Text message = new Text("MOVIMENTO INVÁLIDO: ");
+		if(param == 0) message = new Text(message.getText()+"Rotação Inválida");
+		else if(param == 1) message = new Text(message.getText()+"Posição de Navio Inválida");
+		else if(param == 2) message = new Text(message.getText()+"Posição de Disparo Inválida");
+		message.setFill(Color.RED);
 		logs.add(message);
 	}
 	/**
