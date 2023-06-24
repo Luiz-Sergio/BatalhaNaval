@@ -243,8 +243,7 @@ public class GameController{
     	
     	//if the right button of the mouse is clicked verify is a rotation can be made
     	if(!mousePressed) {
-    		if(event.isSecondaryButtonDown() ) {
-    			
+    		if(event.isSecondaryButtonDown() ) {    			
         		System.out.println("SHIP GET Y "+ship.getY()/dimension);
         		if(ship.getVertical() && ((ship.getX()/dimension) + ship.getTamanho() <= 10)) {
         			if(ship.verifyOccupiedPositions((int)ship.getX()/dimension,(int)ship.getY()/dimension, ocPositions, true)){
@@ -252,6 +251,11 @@ public class GameController{
             			ship.rotate();
             			occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,ship.getTamanho());
         			}
+        			else {
+            			logs.generateError(0);
+            			this.addMessage(logs.getMessage());
+            		}
+        			
         			
         		}else if(!ship.getVertical() && ((ship.getY()/dimension) + ship.getTamanho() <= 10)) {
         			if(ship.verifyOccupiedPositions((int)ship.getX()/dimension,(int)ship.getY()/dimension, ocPositions, true)){
@@ -259,10 +263,10 @@ public class GameController{
         			ship.rotate();
         			occupyPositions((int)ship.getX()/dimension, (int)ship.getY()/dimension, ship.getVertical(), ship.getTamanho(), ocPositions,ship.getTamanho());
         			}
-        		}
-        		else {
-        			logs.generateError(0);
-        			this.addMessage(logs.getMessage());
+        			else {
+            			logs.generateError(0);
+            			this.addMessage(logs.getMessage());
+            		}
         		}
         		
         	//if the left button is clicked then save it as the lastValidX and lastValidY
@@ -270,7 +274,7 @@ public class GameController{
         		mousePressed = !mousePressed;
         		ship.setLastValidX(ship.getX());
         		ship.setLastValidY(ship.getY());
-        		System.out.println("LAST VALID X AND Y"+ship.getLastValidX()+" "+ship.getLastValidY());
+        	System.out.println("LAST VALID X AND Y"+ship.getLastValidX()+" "+ship.getLastValidY());
         	}
         	
     	}
