@@ -48,7 +48,4 @@ public class Logs {
 	public Text getMessage() {
 		return logs.get(logs.size()-1);
 	}
-	/*public void clearLogs() {
-		logs = new ArrayList<Text>();
-	}*/
 }

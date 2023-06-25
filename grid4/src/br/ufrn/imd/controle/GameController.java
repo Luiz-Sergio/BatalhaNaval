@@ -176,7 +176,6 @@ public class GameController{
 				rec.setOnMouseClicked(event -> {
 					if(playerTurn && !gameOver && gameStart) {
 						playerTurn((int)(event.getY()/dimension),(int)(event.getX()/dimension));
-						//rec.setFill(Color.YELLOW);
 					}
 				});
 				enemyBoard[i / dimension][j/dimension] = rec;
@@ -189,9 +188,7 @@ public class GameController{
 				
 				//add the squares to each pane
 				enemyPane.getChildren().add(rec);
-				playerPane.getChildren().add(rec2);
-				
-				//rec.setFill(Color.RED);
+				playerPane.getChildren().add(rec2);				
 			}
 		}
 		
@@ -268,6 +265,10 @@ public class GameController{
             			this.addMessage(logs.getMessage());
             		}
         		}
+        		else {
+        			logs.generateError(0);
+        			this.addMessage(logs.getMessage());
+        		}
         		
         	//if the left button is clicked then save it as the lastValidX and lastValidY
         	}else {
@@ -278,7 +279,6 @@ public class GameController{
         	}
         	
     	}
-    		
     }
     
     /**
@@ -345,7 +345,6 @@ public class GameController{
             	ship.setY(posY*dimension);
         	
         	}	
-        	//board[posX/dimension][posY/dimension].setFill(Color.RED);
     	}
     	ship.draw();
     }
@@ -469,9 +468,7 @@ public class GameController{
      * @param y y coordinate of the mouse in the enemy board
      * @param x x coordinate of the mouse in the enemy board
      */
-	public void playerTurn(int y, int x) {
-		//System.out.println(">>>>>>>>>>>>>>>>>>>>X "+(int)(event.getX()/dimension)+" >>>>>>>>>>>>>>>>>>>>>>>>Y "+(int)(event.getY()/dimension));
-		
+	public void playerTurn(int y, int x) {		
 		//verify is the position wasn't shot[!=10]
 		if(occupiedPositionsEnemy[y][x]!=10) {
 			//verify if is a ship[!=0]
@@ -524,7 +521,6 @@ public class GameController{
 	 * Possible actions in the computer turn
 	 */
 	public void computerTurn() {		
-		//System.out.println(">>>>>>>>>>>>>>>>>>>>X "+(int)(event.getX()/dimension)+" >>>>>>>>>>>>>>>>>>>>>>>>Y "+(int)(event.getY()/dimension));
 		int x ;
 		int y ;
 		
@@ -569,15 +565,7 @@ public class GameController{
 				System.out.print(occupiedPositions[i][j]+" ");
 			}
 			System.out.println();
-		}
-				/*
-		if(occupiedPositions[y][x]!=0) {
-			System.out.println("Acertou navio "+occupiedPositionsEnemy[y][x]);
-			//diminua vida do navio inimigo acertado
-			//atualize board de posiçoes ocupadas do navio inimigo
-			//
-		}
-		*/
+		}			
 		
 		//after the shot verify it the game is over
 		isGameOver(playerShips);
@@ -629,12 +617,8 @@ public class GameController{
     		
 
     		if(playerTurn) {
-    			//System.out.println("Player's turn");
-    		}else {
-    			//System.out.println("Computer's turn");
-    			
+    		}else {    			
     			computerTurn();
-    			//playerTurn = !playerTurn;
     		}
     		});
 
@@ -645,19 +629,8 @@ public class GameController{
              }
     	}
     		System.out.println("JOGO ACABOU");    	
-    	//gameOver = false;
     	 }).start();
-    	//initialize();
-    }
-    
-    public void endGame() {
-    		
-    	/*
-    	for(Ship ship: playerShips) {
-    		ship.unblockShip();
-    	}
-    	*/
-    }         
+    }    
     public void addMessage(Text message) {
     	for(Node n : logsPane.getChildren()) {
         	n.setLayoutY(n.getLayoutY()+18);

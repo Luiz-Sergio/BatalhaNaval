@@ -249,7 +249,6 @@ public class Ship implements Piece{
 		    	}else if((!vertical &&  height + x > 10) ) {
 		    		return true;
 		    	}else {
-		    		//ocupiedPositions[x][y] = true;
 		    		if(verifyOccupiedPositions(x,y,ocupiedPositions,false)) {
 		    			return false;//its a valid position
 		    		}else {
