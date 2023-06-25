@@ -511,6 +511,8 @@ public class GameController{
 		
 		//if the game is over increment the counter of wins and print it in the screen
 		if(gameOver) {
+			logs.generateEndMessage(true);
+			this.addMessage(logs.getMessage());
 			System.out.println("YOU WON!!!");
 			winsCounterInt++;
 			winsCounter.setText(Integer.toString(winsCounterInt));
@@ -572,6 +574,8 @@ public class GameController{
 		
 		//if the game is over increment loss counter and print it on the screen
 		if(gameOver) {
+			logs.generateEndMessage(false);
+			this.addMessage(logs.getMessage());
 			System.out.println("COMPUTER WON!!!");
 			defeatsCounterInt++;
 			defeatsCounter.setText(Integer.toString(defeatsCounterInt));

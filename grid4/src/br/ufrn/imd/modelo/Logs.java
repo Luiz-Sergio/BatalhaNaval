@@ -42,6 +42,18 @@ public class Logs {
 		message.setFill(Color.RED);
 		logs.add(message);
 	}
+	public void generateEndMessage(boolean victory) {
+		Text message;
+		if(victory) {
+			message = new Text("VOCÊ GANHOU!");
+			message.setFill(Color.GREEN);
+		}
+		else {
+			message = new Text("VOCÊ PERDEU!");
+			message.setFill(Color.RED);
+		}
+		logs.add(message);
+	}
 	/**
 	 * returns the latest added message to the ArrayList of logs
 	 */
