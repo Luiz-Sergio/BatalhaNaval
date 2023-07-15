@@ -1,7 +1,8 @@
 
 # Battle Ship - Master Game Ultra Version
 
-A Battle ship game implemented by Luiz Sergio and Luis Eduardo to the class of object oriented programing of the Federal University of Rio Grande do Norte(UFRN)
+A Battle ship game implemented by Luiz Sergio and Luis Eduardo to the class of object oriented programing of the Federal University of Rio Grande do Norte(UFRN).
+This game was made in java and its graphical interface in javaFx.
 
 ## Screenshots
 
